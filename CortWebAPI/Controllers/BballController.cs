@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CortWebAPI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
@@ -14,40 +16,31 @@ namespace CortWebAPI.Controllers
     [Route("api/[controller]")]
     public class BballController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<BballController> _logger;
         private readonly IConfiguration _configuration;
+        private IMemoryCache _cache;
+        private IBballService _bballService;
 
-        public BballController(ILogger<BballController> logger, IConfiguration configuration)
+        public BballController(ILogger<BballController> logger, IConfiguration configuration, IMemoryCache memoryCache, IBballService bballService)
         {
             _logger = logger;
             _configuration = configuration;
+            _cache = memoryCache;
+            _bballService = bballService;
         }
 
         [HttpGet]
-        public JsonResult Get()
+        public EnumerableRowCollection<Player> Get()
         {
-            string query = @"select name from dbo.Player";
-            DataTable table = new DataTable();
-            string sqlDataSource = _configuration.GetConnectionString("BballCon");
-            SqlDataReader myReader;
-            using(SqlConnection myCon = new SqlConnection(sqlDataSource))
-            {
-                myCon.Open();
-                using (SqlCommand myCommand = new SqlCommand(query, myCon))
-                {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
-                    myCon.Close();
-                }
-            }
+            return _bballService.GetAllPlayers();
+            
+        }
 
-            return new JsonResult(table);
+        [HttpPost]
+        public JsonResult Post(Player player, [FromQuery(Name = "teamName")] string teamName)
+        {
+            return _bballService.AddPlayer(player, teamName);
         }
     }
+    
 }

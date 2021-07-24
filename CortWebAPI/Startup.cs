@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http;
+using CortWebAPI.Services;
 
 namespace CortWebAPI
 {
@@ -26,47 +27,68 @@ namespace CortWebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(c =>
+
+            try
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
-                .AllowAnyHeader());
-            });
+                services.AddCors(c =>
+                {
+                    c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
+                    .AllowAnyHeader());
+                });
 
-            services.AddControllersWithViews()
-                .AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling=Newtonsoft
-                .Json.ReferenceLoopHandling.Ignore)
-                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
-                ;
+                services.AddTransient<IBballService, BballService>();
 
-            services.AddControllers();
+                services.AddControllersWithViews()
+                    .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft
+                    .Json.ReferenceLoopHandling.Ignore)
+                    .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
+                    ;
+
+                services.AddControllers();
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
-            if (env.IsDevelopment())
+            try
             {
-                app.UseExceptionHandler("/Error");
-                app.UseHsts();
+                app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+                if (env.IsDevelopment())
+                {
+                    app.UseExceptionHandler("/Error");
+                    app.UseHsts();
+
+                }
+
+                app.UseRouting();
+
+                app.UseAuthorization();
+
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapGet("/hello/{name:alpha}", async context =>
+                    {
+                        var name = context.Request.RouteValues["name"];
+                        await context.Response.WriteAsync($"Hello {name}!");
+                    });
+                    endpoints.MapControllers();
+                });
+            } catch (Exception e)
+            {
 
             }
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/hello/{name:alpha}", async context =>
-                {
-                    var name = context.Request.RouteValues["name"];
-                    await context.Response.WriteAsync($"Hello {name}!");
-                });
-                endpoints.MapControllers();
-            });
+            
         }
     }
 }
