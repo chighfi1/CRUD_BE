@@ -1,4 +1,5 @@
 ﻿using CortWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
@@ -28,16 +29,14 @@ namespace CortWebAPI.Controllers
             _cache = memoryCache;
             _bballService = bballService;
         }
-
         [HttpGet]
         public EnumerableRowCollection<Player> Get()
         {
             return _bballService.GetAllPlayers();
             
         }
-
         [HttpPost]
-        public JsonResult Post(Player player, [FromQuery(Name = "teamName")] string teamName)
+        public int Post(Player player, [FromQuery(Name = "teamName")] string teamName)
         {
             return _bballService.AddPlayer(player, teamName);
         }

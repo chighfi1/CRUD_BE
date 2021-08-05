@@ -6,7 +6,6 @@ C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\CortWeb
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\CortWebAPI.runtimeconfig.dev.json
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\CortWebAPI.dll
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\CortWebAPI.pdb
-C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\obj\Debug\netcoreapp3.1\CortWebAPI.csprojAssemblyReference.cache
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\obj\Debug\netcoreapp3.1\CortWebAPI.AssemblyInfoInputs.cache
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\obj\Debug\netcoreapp3.1\CortWebAPI.AssemblyInfo.cs
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\obj\Debug\netcoreapp3.1\CortWebAPI.csproj.CoreCompileInputs.cache
@@ -30,3 +29,4 @@ C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\runtime
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\bin\Debug\netcoreapp3.1\BouncyCastle.Crypto.dll
+C:\Users\Cort\source\repos\CortWebAPI\CortWebAPI\obj\Debug\netcoreapp3.1\CortWebAPI.csproj.AssemblyReference.cache

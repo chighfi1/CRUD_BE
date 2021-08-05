@@ -1,4 +1,6 @@
 ﻿using CortWebAPI.Models;
+using CortWebAPI.Services.CortWebAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -13,16 +15,21 @@ namespace CortWebAPI.Controllers
     [ApiController]
     public class LoginController : ControllerBase
     {
+
+        private IUserService _userService;
+
+        public LoginController(IUserService userService)
+        {
+            _userService = userService;
+        }
+
         [HttpPost]
         public bool Post([FromBody] LoginUser user)
         {
-
-            var _rsaHelper = new RsaHelper();
             try
             {
                 var isAuth = false;
-                var clearTextPassword = _rsaHelper.Decrypt(user.Password);
-                isAuth = user.Name.Equals("person") && clearTextPassword.Equals("personpass");
+                isAuth = _userService.AuthUser(user);
                 return isAuth;
             }
             catch (Exception ex)

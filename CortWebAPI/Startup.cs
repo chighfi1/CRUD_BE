@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Serialization;
 using Microsoft.AspNetCore.Http;
 using CortWebAPI.Services;
+using CortWebAPI.Exceptions;
+using CortWebAPI.Services.CortWebAPI.Services;
 
 namespace CortWebAPI
 {
@@ -37,6 +39,7 @@ namespace CortWebAPI
                 });
 
                 services.AddTransient<IBballService, BballService>();
+                services.AddTransient<IUserService, UserService>();
 
                 services.AddControllersWithViews()
                     .AddNewtonsoftJson(options =>
@@ -45,7 +48,7 @@ namespace CortWebAPI
                     .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver())
                     ;
 
-                services.AddControllers();
+                services.AddControllers(options => options.Filters.Add(new HttpResponseExceptionFilter()));
             }
             catch (Exception e)
             {
@@ -73,7 +76,7 @@ namespace CortWebAPI
 
                 app.UseRouting();
 
-                app.UseAuthorization();
+                // app.UseAuthentication();
 
                 app.UseEndpoints(endpoints =>
                 {

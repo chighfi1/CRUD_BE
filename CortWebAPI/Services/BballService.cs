@@ -12,7 +12,7 @@ namespace CortWebAPI.Services
     public interface IBballService
     {
         EnumerableRowCollection<Player> GetAllPlayers();
-        JsonResult AddPlayer(Player player, string teamName);
+        int AddPlayer(Player player, string teamName);
     }
 
     public class BballService : IBballService
@@ -26,7 +26,7 @@ namespace CortWebAPI.Services
 
         public EnumerableRowCollection<Player> GetAllPlayers()
         {
-            string query = @"select * from dbo.Player";
+            string query = "SelectPlayers";
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BballCon");
             SqlDataReader myReader;
@@ -35,10 +35,14 @@ namespace CortWebAPI.Services
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myReader = myCommand.ExecuteReader();
+                    /*
+                    myCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    myCommand.Parameters.Add(new SqlParameter("@teamName", teamName));
+                    myCommand.ExecuteNonQuery();
                     table.Load(myReader);
                     myReader.Close();
                     myCon.Close();
+                    */
                 }
             }
 
@@ -54,26 +58,29 @@ namespace CortWebAPI.Services
             return convertedLists;
         }
 
-        public JsonResult AddPlayer(Player player, string teamName)
+        public int AddPlayer(Player player, string teamName)
         {
-            string query = @"insert into dbo.Player VALUES ((SELECT teamId from dbo.Team WHERE name = '" + teamName + @"'), '" + player.name + @"', '" + player.position + @"')";
+            string query = "InsertPlayer";
 
             DataTable table = new DataTable();
             string sqlDataSource = _configuration.GetConnectionString("BballCon");
-            SqlDataReader myReader;
+            var playerId = 0;
             using (SqlConnection myCon = new SqlConnection(sqlDataSource))
             {
                 myCon.Open();
                 using (SqlCommand myCommand = new SqlCommand(query, myCon))
                 {
-                    myReader = myCommand.ExecuteReader();
-                    table.Load(myReader);
-                    myReader.Close();
+                    myCommand.CommandType = System.Data.CommandType.StoredProcedure;
+                    myCommand.Parameters.Add(new SqlParameter("@teamName", teamName));
+                    myCommand.Parameters.Add(new SqlParameter("@name", player.name));
+                    myCommand.Parameters.Add(new SqlParameter("@position", player.position));
+                    myCommand.Parameters.Add("@PlayerId", SqlDbType.Int).Direction=ParameterDirection.Output;                    
+                    playerId = (int)myCommand.Parameters["@PlayerId"].Value;
                     myCon.Close();
                 }
             }
 
-            return new JsonResult(table);
+            return playerId;
         }
     }
 }
